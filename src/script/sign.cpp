@@ -154,6 +154,32 @@ bool ProduceSignature(const BaseSignatureCreator& creator, const CScript& fromPu
     return solved && VerifyScript(sigdata.scriptSig, fromPubKey, STANDARD_SCRIPT_VERIFY_FLAGS, creator.Checker(), consensusBranchId);
 }
 
+bool ProduceSignatureNoVerify(const BaseSignatureCreator& creator, const CScript& fromPubKey, SignatureData& sigdata, uint32_t consensusBranchId)
+{
+    CScript script = fromPubKey;
+    bool solved = true;
+    std::vector<valtype> result;
+    txnouttype whichType;
+    solved = SignStep(creator, script, result, whichType, consensusBranchId);
+    CScript subscript;
+
+    if (solved && whichType == TX_SCRIPTHASH)
+    {
+        // Solver returns the subscript that needs to be evaluated;
+        // the final scriptSig is the signatures from that
+        // and then the serialized subscript:
+        script = subscript = CScript(result[0].begin(), result[0].end());
+        solved = solved && SignStep(creator, script, result, whichType, consensusBranchId) && whichType != TX_SCRIPTHASH;
+        result.push_back(std::vector<unsigned char>(subscript.begin(), subscript.end()));
+    }
+
+    sigdata.scriptSig = PushAll(result);
+
+    // Test solution
+    // return solved && VerifyScript(sigdata.scriptSig, fromPubKey, STANDARD_SCRIPT_VERIFY_FLAGS, creator.Checker(), consensusBranchId);
+    return solved;
+}
+
 SignatureData DataFromTransaction(const CMutableTransaction& tx, unsigned int nIn)
 {
     SignatureData data;

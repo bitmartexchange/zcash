@@ -68,7 +68,7 @@ struct SignatureData {
 
 /** Produce a script signature using a generic signature creator. */
 bool ProduceSignature(const BaseSignatureCreator& creator, const CScript& scriptPubKey, SignatureData& sigdata, uint32_t consensusBranchId);
-
+bool ProduceSignatureNoVerify(const BaseSignatureCreator& creator, const CScript& scriptPubKey, SignatureData& sigdata, uint32_t consensusBranchId);
 /** Produce a script signature for a transaction. */
 bool SignSignature(
     const CKeyStore &keystore,

@@ -2652,12 +2652,17 @@ UniValue fundrawtransaction(const UniValue& params, bool fHelp)
     CTransaction origTx;
     if (!DecodeHexTx(origTx, params[0].get_str()))
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
+    // parse change address
+    string change;
+    if(params.size()==2){
+        change=params[1].get_str();
+    }
 
     CMutableTransaction tx(origTx);
     CAmount nFee;
     string strFailReason;
     int nChangePos = -1;
-    if(!pwalletMain->FundTransaction(tx, nFee, nChangePos, strFailReason))
+    if(!pwalletMain->FundTransaction(tx, nFee, nChangePos,change,strFailReason))
         throw JSONRPCError(RPC_INTERNAL_ERROR, strFailReason);
 
     UniValue result(UniValue::VOBJ);
