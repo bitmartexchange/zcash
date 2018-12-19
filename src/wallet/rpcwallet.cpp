@@ -2628,6 +2628,7 @@ UniValue fundrawtransaction(const UniValue& params, bool fHelp)
                             "The inputs added will not be signed, use signrawtransaction for that.\n"
                             "\nArguments:\n"
                             "1. \"hexstring\"    (string, required) The hex string of the raw transaction\n"
+                            "2. \"change address\" (string,optional) The change address\n"
                             "\nResult:\n"
                             "{\n"
                             "  \"hex\":       \"value\", (string)  The resulting raw transaction (hex-encoded string)\n"
