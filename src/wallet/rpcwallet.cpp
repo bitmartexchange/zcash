@@ -2619,7 +2619,7 @@ UniValue fundrawtransaction(const UniValue& params, bool fHelp)
     if (!EnsureWalletIsAvailable(fHelp))
         return NullUniValue;
 
-    if (fHelp || params.size() != 1)
+    if (fHelp || params.size() >2)
         throw runtime_error(
                             "fundrawtransaction \"hexstring\"\n"
                             "\nAdd inputs to a transaction until it has enough in value to meet its out value.\n"
