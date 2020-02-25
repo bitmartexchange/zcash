@@ -3100,12 +3100,14 @@ void CWallet::AvailableCoins(vector<COutput>& vCoins, bool fOnlyConfirmed, const
 
             for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
                 isminetype mine = IsMine(pcoin->vout[i]);
-                if (!(IsSpent(wtxid, i)) && mine != ISMINE_NO &&
+//                if (!(IsSpent(wtxid, i)) && mine != ISMINE_NO &&
+                if (!(IsSpent(wtxid, i)) && mine != ISMINE_WATCH_ONLY &&
                     !IsLockedCoin((*it).first, i) && (pcoin->vout[i].nValue > 0 || fIncludeZeroValue) &&
                     (!coinControl || !coinControl->HasSelected() || coinControl->fAllowOtherInputs || coinControl->IsSelected((*it).first, i)))
-                        vCoins.push_back(COutput(pcoin, i, nDepth,
-                                                 ((mine & ISMINE_SPENDABLE) != ISMINE_NO) ||
-                                                  (coinControl && coinControl->fAllowWatchOnly && (mine & ISMINE_WATCH_SOLVABLE) != ISMINE_NO)));
+                        vCoins.push_back(COutput(pcoin, i, nDepth, true));
+//                        vCoins.push_back(COutput(pcoin, i, nDepth,
+//                                                 ((mine & ISMINE_SPENDABLE) != ISMINE_NO) ||
+//                                                  (coinControl && coinControl->fAllowWatchOnly && (mine & ISMINE_WATCH_SOLVABLE) != ISMINE_NO)));
             }
         }
     }
@@ -3367,7 +3369,6 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount &nFeeRet, int& nC
     }
     coinControl.fAllowOtherInputs = true;
 //    coinControl.fAllowWatchOnly = includeWatching;
-    coinControl.fAllowWatchOnly = true;
     BOOST_FOREACH(const CTxIn& txin, tx.vin)
         coinControl.Select(txin.prevout);
 
