@@ -3367,6 +3367,7 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount &nFeeRet, int& nC
     }
     coinControl.fAllowOtherInputs = true;
 //    coinControl.fAllowWatchOnly = includeWatching;
+    coinControl.fAllowWatchOnly = true;
     BOOST_FOREACH(const CTxIn& txin, tx.vin)
         coinControl.Select(txin.prevout);
 
